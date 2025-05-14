@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { Card, Title, Paragraph, Button, TextInput, List, Divider } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 interface ChatMessage {
   id: string;
@@ -46,6 +47,7 @@ const defaultQuestions = [
 ];
 
 const ChatScreen = () => {
+  const { t } = useTranslation();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
 
@@ -99,17 +101,25 @@ const ChatScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView>
+    <KeyboardAvoidingView 
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+    >
+      <View style={styles.header}>
+        <LanguageSwitcher />
+      </View>
+      <ScrollView style={styles.scrollView}>
         <Card style={styles.card}>
           <Card.Content>
-            <Title>Common Health Questions</Title>
+            <Title style={styles.title}>{t('common.healthQuestions')}</Title>
             {defaultQuestions.map((item, index) => (
               <React.Fragment key={index}>
                 <List.Item
                   title={item.question}
                   onPress={() => handleQuestionPress(item.question, item.answer)}
                   left={props => <List.Icon {...props} icon="help-circle" />}
+                  style={styles.questionItem}
                 />
                 <Divider />
               </React.Fragment>
@@ -127,7 +137,7 @@ const ChatScreen = () => {
               ]}
             >
               <Card.Content>
-                <Paragraph>{message.text}</Paragraph>
+                <Paragraph style={styles.messageText}>{message.text}</Paragraph>
                 <Paragraph style={styles.timestamp}>
                   {message.timestamp.toLocaleTimeString()}
                 </Paragraph>
@@ -141,19 +151,21 @@ const ChatScreen = () => {
         <TextInput
           value={inputText}
           onChangeText={setInputText}
-          placeholder="Type your health question..."
+          placeholder={t('common.typeQuestion')}
           style={styles.input}
           multiline
+          mode="outlined"
         />
         <Button
           mode="contained"
           onPress={handleSend}
           style={styles.sendButton}
+          icon="send"
         >
-          Send
+          {t('common.send')}
         </Button>
       </View>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -162,9 +174,27 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
+  header: {
+    paddingTop: 10,
+    paddingRight: 10,
+    alignItems: 'flex-end',
+  },
+  scrollView: {
+    flex: 1,
+  },
   card: {
     margin: 16,
-    marginBottom: 8,
+    marginTop: 8,
+    borderRadius: 12,
+    elevation: 4,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  questionItem: {
+    paddingVertical: 8,
   },
   chatContainer: {
     padding: 16,
@@ -173,6 +203,7 @@ const styles = StyleSheet.create({
   messageCard: {
     marginBottom: 12,
     maxWidth: '85%',
+    borderRadius: 12,
   },
   userMessage: {
     alignSelf: 'flex-end',
@@ -181,6 +212,10 @@ const styles = StyleSheet.create({
   botMessage: {
     alignSelf: 'flex-start',
     backgroundColor: '#FFFFFF',
+  },
+  messageText: {
+    fontSize: 16,
+    lineHeight: 22,
   },
   timestamp: {
     fontSize: 12,
@@ -194,14 +229,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
     borderTopColor: '#E0E0E0',
+    alignItems: 'center',
   },
   input: {
     flex: 1,
     marginRight: 8,
     backgroundColor: '#FFFFFF',
+    maxHeight: 100,
   },
   sendButton: {
     justifyContent: 'center',
+    borderRadius: 8,
   },
 });
 

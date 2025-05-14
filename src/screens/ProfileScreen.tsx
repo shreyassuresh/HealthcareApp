@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, StyleSheet, Image } from 'react-native';
 import { Card, Title, Paragraph, Button, TextInput, List, Switch, Divider } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 interface MedicalRecord {
   id: string;
@@ -49,7 +49,14 @@ const mockMedicalRecords: MedicalRecord[] = [
   }
 ];
 
-const ProfileScreen = () => {
+interface ProfileScreenProps {
+  navigation: any;
+  route: any;
+}
+
+const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
+  const { t } = useTranslation();
+
   const [userInfo, setUserInfo] = useState({
     name: 'John Doe',
     age: '28',
@@ -78,8 +85,8 @@ const ProfileScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView>
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         <Card style={styles.profileCard}>
           <Card.Content>
             <View style={styles.profileHeader}>
@@ -216,7 +223,7 @@ const ProfileScreen = () => {
           Logout
         </Button>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -225,10 +232,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 16,
+  },
   profileCard: {
-    margin: 20,
-    marginTop: 24,
-    marginBottom: 12,
+    margin: 16,
+    marginTop: 16,
     borderRadius: 12,
     elevation: 4,
   },
@@ -255,13 +267,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   card: {
-    margin: 20,
+    margin: 16,
     marginTop: 12,
     borderRadius: 12,
     elevation: 4,
   },
   logoutButton: {
-    margin: 20,
+    margin: 16,
     marginTop: 12,
     marginBottom: 24,
     borderRadius: 8,

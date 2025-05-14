@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { Card, Title, Paragraph, Button, TextInput, Chip, List, Divider } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 interface Symptom {
   id: string;
@@ -77,6 +78,7 @@ const diagnosisDatabase: { [key: string]: DiagnosisResult } = {
 };
 
 const DiagnosisScreen = () => {
+  const { t } = useTranslation();
   const [symptoms, setSymptoms] = useState<Symptom[]>(commonSymptoms);
   const [diagnosisResult, setDiagnosisResult] = useState<DiagnosisResult | null>(null);
   const [additionalNotes, setAdditionalNotes] = useState('');
@@ -109,11 +111,14 @@ const DiagnosisScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <LanguageSwitcher />
+      </View>
+      <ScrollView style={styles.scrollView}>
         <Card style={styles.card}>
           <Card.Content>
-            <Title>Select Your Symptoms</Title>
+            <Title style={styles.title}>{t('common.quickDiagnosis')}</Title>
             <View style={styles.symptomsContainer}>
               {symptoms.map((symptom) => (
                 <Chip
@@ -140,12 +145,15 @@ const DiagnosisScreen = () => {
               multiline
               numberOfLines={3}
               style={styles.input}
+              mode="outlined"
+              placeholder="Enter any additional symptoms or details..."
             />
 
             <Button
               mode="contained"
               onPress={getDiagnosis}
               style={styles.button}
+              icon="stethoscope"
             >
               Get Diagnosis
             </Button>
@@ -155,7 +163,7 @@ const DiagnosisScreen = () => {
         {diagnosisResult && (
           <Card style={styles.card}>
             <Card.Content>
-              <Title>Diagnosis Result</Title>
+              <Title style={styles.title}>Diagnosis Result</Title>
               <View style={styles.resultContainer}>
                 <List.Item
                   title="Condition"
@@ -213,6 +221,7 @@ const DiagnosisScreen = () => {
                 mode="contained"
                 onPress={() => {/* Navigate to doctors list */}}
                 style={styles.button}
+                icon="doctor"
               >
                 Find Recommended Doctor
               </Button>
@@ -220,7 +229,7 @@ const DiagnosisScreen = () => {
           </Card>
         )}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -229,19 +238,32 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
+  header: {
+    paddingTop: 10,
+    paddingRight: 10,
+    alignItems: 'flex-end',
+  },
+  scrollView: {
+    flex: 1,
+  },
   card: {
-    margin: 20,
-    marginTop: 24,
+    margin: 16,
+    marginTop: 8,
     borderRadius: 12,
     elevation: 4,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 16,
   },
   symptomsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginVertical: 16,
+    marginVertical: 12,
   },
   chip: {
-    margin: 6,
+    margin: 4,
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#E0E0E0',
@@ -255,15 +277,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   input: {
-    marginVertical: 16,
+    marginVertical: 12,
+    backgroundColor: '#FFFFFF',
     borderRadius: 8,
   },
   button: {
-    marginTop: 16,
+    marginTop: 12,
     borderRadius: 8,
+    paddingVertical: 8,
   },
   resultContainer: {
-    marginVertical: 16,
+    marginVertical: 12,
   },
 });
 

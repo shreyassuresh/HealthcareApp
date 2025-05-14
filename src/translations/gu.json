@@ -1,0 +1,50 @@
+{
+  "common": {
+    "welcome": "હેલ્થકેરમાં આપનું સ્વાગત છે",
+    "subtitle": "તમારો વ્યક્તિગત આરોગ્ય સાથી",
+    "login": "લોગિન",
+    "signup": "સાઇન અપ",
+    "logout": "લોગઆઉટ",
+    "settings": "સેટિંગ્સ",
+    "language": "ભાષા",
+    "profile": "પ્રોફાઇલ",
+    "search": "શોધો",
+    "appointments": "એપોઇન્ટમેન્ટ",
+    "doctors": "ડોક્ટર",
+    "hospitals": "હોસ્પિટલ",
+    "emergency": "એમર્જન્સી",
+    "health": "આરોગ્ય",
+    "medicines": "દવાઓ",
+    "home": "હોમ",
+    "diagnosis": "નિદાન",
+    "chat": "ચેટ",
+    "quickDiagnosis": "ઝડપી નિદાન",
+    "findDoctors": "ડોક્ટર શોધો",
+    "healthChat": "આરોગ્ય ચેટ",
+    "diagnosisDesc": "તમારા લક્ષણો તપાસો અને તાત્કાલિક તબીબી સલાહ મેળવો",
+    "doctorsDesc": "તમારી નજીકના નિષ્ણાતો શોધો",
+    "chatDesc": "તમારા આરોગ્ય પ્રશ્નોના જવાબ મેળવો",
+    "emergencyDesc": "તાત્કાલિક તબીબી સહાય જોઈએ છે?",
+    "getStarted": "શરૂ કરો",
+    "callEmergency": "એમર્જન્સી કૉલ કરો",
+    "healthQuestions": "સામાન્ય આરોગ્ય પ્રશ્નો",
+    "typeQuestion": "તમારો આરોગ્ય પ્રશ્ન લખો...",
+    "send": "મોકલો"
+  },
+  "auth": {
+    "email": "ઇમેઇલ",
+    "password": "પાસવર્ડ",
+    "forgotPassword": "પાસવર્ડ ભૂલી ગયા છો?",
+    "dontHaveAccount": "ખાતું નથી?",
+    "alreadyHaveAccount": "પહેલેથી ખાતું છે?"
+  },
+  "appointment": {
+    "book": "એપોઇન્ટમેન્ટ બુક કરો",
+    "cancel": "એપોઇન્ટમેન્ટ રદ કરો",
+    "reschedule": "ફરીથી શેડ્યૂલ કરો",
+    "date": "તારીખ",
+    "time": "સમય",
+    "doctor": "ડોક્ટર",
+    "specialization": "વિશેષતા"
+  }
+} 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -6,6 +6,10 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { Doctor } from './src/services/api';
+import './src/i18n';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './src/components/LanguageSwitcher';
+import { View, ActivityIndicator } from 'react-native';
 
 // Import screens
 import HomeScreen from './src/screens/HomeScreen';
@@ -32,6 +36,16 @@ const Tab = createBottomTabNavigator<RootTabParamList>();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function TabNavigator() {
+  const { t, i18n } = useTranslation();
+  
+  if (!i18n.isInitialized) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#2196F3" />
+      </View>
+    );
+  }
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -64,16 +78,61 @@ function TabNavigator() {
         tabBarInactiveTintColor: 'gray',
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Diagnosis" component={DiagnosisScreen} />
-      <Tab.Screen name="Doctors" component={DoctorsScreen} />
-      <Tab.Screen name="Chat" component={ChatScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen 
+        name="Home" 
+        component={HomeScreen}
+        options={{ title: t('common.home') }}
+      />
+      <Tab.Screen 
+        name="Diagnosis" 
+        component={DiagnosisScreen}
+        options={{ title: t('common.diagnosis') }}
+      />
+      <Tab.Screen 
+        name="Doctors" 
+        component={DoctorsScreen}
+        options={{ title: t('common.doctors') }}
+      />
+      <Tab.Screen 
+        name="Chat" 
+        component={ChatScreen}
+        options={{ title: t('common.chat') }}
+      />
+      <Tab.Screen 
+        name="Profile" 
+        component={ProfileScreen}
+        options={{ title: t('common.profile') }}
+      />
     </Tab.Navigator>
   );
 }
 
 function App() {
+  const { t, i18n } = useTranslation();
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    const initializeI18n = async () => {
+      try {
+        await i18n.isInitialized;
+        setIsReady(true);
+      } catch (error) {
+        console.error('Error initializing i18n:', error);
+        setIsReady(true); // Still set ready to show app even if i18n fails
+      }
+    };
+
+    initializeI18n();
+  }, [i18n]);
+
+  if (!isReady) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#2196F3" />
+      </View>
+    );
+  }
+
   return (
     <PaperProvider>
       <NavigationContainer>
@@ -81,12 +140,18 @@ function App() {
           <Stack.Screen
             name="Main"
             component={TabNavigator}
-            options={{ headerShown: false }}
+            options={{ 
+              headerShown: false,
+              headerRight: () => <LanguageSwitcher />
+            }}
           />
           <Stack.Screen
             name="Appointment"
             component={AppointmentScreen}
-            options={{ title: 'Book Appointment' }}
+            options={{ 
+              title: t('appointment.book'),
+              headerRight: () => <LanguageSwitcher />
+            }}
           />
         </Stack.Navigator>
       </NavigationContainer>

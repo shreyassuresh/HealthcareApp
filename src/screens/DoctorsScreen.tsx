@@ -7,6 +7,7 @@ import type { CompositeScreenProps } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootTabParamList, RootStackParamList } from '../../App';
 import { api, Doctor } from '../services/api';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 type DoctorsScreenProps = CompositeScreenProps<
   BottomTabScreenProps<RootTabParamList, 'Doctors'>,
@@ -61,8 +62,11 @@ const DoctorsScreen: React.FC<DoctorsScreenProps> = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <LanguageSwitcher />
+      </View>
+      <ScrollView style={styles.scrollView}>
         <View style={styles.searchContainer}>
           <Searchbar
             placeholder="Search doctors..."
@@ -76,6 +80,7 @@ const DoctorsScreen: React.FC<DoctorsScreenProps> = ({ navigation }) => {
           horizontal
           showsHorizontalScrollIndicator={false}
           style={styles.specialtiesContainer}
+          contentContainerStyle={styles.specialtiesContent}
         >
           {specialties.map((specialty) => (
             <Chip
@@ -84,7 +89,13 @@ const DoctorsScreen: React.FC<DoctorsScreenProps> = ({ navigation }) => {
               onPress={() => setSelectedSpecialty(
                 selectedSpecialty === specialty ? null : specialty
               )}
-              style={styles.chip}
+              style={[
+                styles.chip,
+                selectedSpecialty === specialty && styles.selectedChip
+              ]}
+              textStyle={selectedSpecialty === specialty ? styles.selectedChipText : undefined}
+              showSelectedCheck={false}
+              mode="outlined"
             >
               {specialty}
             </Chip>
@@ -93,14 +104,11 @@ const DoctorsScreen: React.FC<DoctorsScreenProps> = ({ navigation }) => {
 
         {isLoading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0000ff" />
+            <ActivityIndicator size="large" color="#2196F3" />
           </View>
         ) : error ? (
           <View style={styles.errorContainer}>
             <Paragraph style={styles.errorText}>{error}</Paragraph>
-            <Button mode="contained" onPress={searchDoctors}>
-              Retry
-            </Button>
           </View>
         ) : (
           <View style={styles.doctorsContainer}>
@@ -114,28 +122,58 @@ const DoctorsScreen: React.FC<DoctorsScreenProps> = ({ navigation }) => {
                       style={styles.avatar}
                     />
                     <View style={styles.doctorInfo}>
-                      <Title>{doctor.name}</Title>
-                      <Paragraph>{doctor.specialization}</Paragraph>
-                      <Paragraph>Experience: {doctor.experience}</Paragraph>
-                      <Paragraph>Rating: {doctor.rating} ⭐</Paragraph>
+                      <Title style={styles.doctorName}>Dr. {doctor.name}</Title>
+                      <Paragraph style={styles.specialization}>
+                        {doctor.specialization}
+                      </Paragraph>
+                      <View style={styles.ratingContainer}>
+                        <IconButton
+                          icon="star"
+                          size={16}
+                          iconColor="#FFD700"
+                          style={styles.ratingIcon}
+                        />
+                        <Paragraph style={styles.rating}>
+                          {doctor.rating} ⭐
+                        </Paragraph>
+                      </View>
                     </View>
                   </View>
 
                   <View style={styles.detailsContainer}>
-                    <Paragraph style={styles.detailText}>
-                      <IconButton icon="map-marker" size={16} /> {doctor.address}
-                    </Paragraph>
-                    <Paragraph style={styles.detailText}>
-                      <IconButton icon="phone" size={16} /> {doctor.phone}
-                    </Paragraph>
-                  </View>
-
-                  <View style={styles.tagsContainer}>
-                    {doctor.languages.map((language, index) => (
-                      <Chip key={index} style={styles.tagChip}>
-                        {language}
-                      </Chip>
-                    ))}
+                    <View style={styles.detailRow}>
+                      <IconButton
+                        icon="map-marker"
+                        size={20}
+                        iconColor="#666"
+                        style={styles.detailIcon}
+                      />
+                      <Paragraph style={styles.detailText}>
+                        {doctor.address}
+                      </Paragraph>
+                    </View>
+                    <View style={styles.detailRow}>
+                      <IconButton
+                        icon="clock-outline"
+                        size={20}
+                        iconColor="#666"
+                        style={styles.detailIcon}
+                      />
+                      <Paragraph style={styles.detailText}>
+                        {doctor.experience} experience
+                      </Paragraph>
+                    </View>
+                    <View style={styles.detailRow}>
+                      <IconButton
+                        icon="translate"
+                        size={20}
+                        iconColor="#666"
+                        style={styles.detailIcon}
+                      />
+                      <Paragraph style={styles.detailText}>
+                        {doctor.languages.join(', ')}
+                      </Paragraph>
+                    </View>
                   </View>
 
                   <View style={styles.insuranceContainer}>
@@ -154,6 +192,7 @@ const DoctorsScreen: React.FC<DoctorsScreenProps> = ({ navigation }) => {
                       mode="contained"
                       onPress={() => handleBookAppointment(doctor)}
                       style={styles.bookButton}
+                      icon="calendar"
                     >
                       Book Appointment
                     </Button>
@@ -170,7 +209,7 @@ const DoctorsScreen: React.FC<DoctorsScreenProps> = ({ navigation }) => {
           </View>
         )}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -179,95 +218,133 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
+  header: {
+    paddingTop: 10,
+    paddingRight: 10,
+    alignItems: 'flex-end',
+  },
+  scrollView: {
+    flex: 1,
+  },
   searchContainer: {
-    padding: 20,
-    paddingTop: 24,
-    paddingBottom: 16,
+    padding: 16,
+    paddingTop: 8,
   },
   searchBar: {
-    elevation: 4,
-    borderRadius: 12,
+    elevation: 2,
+    borderRadius: 8,
   },
   specialtiesContainer: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+    marginBottom: 16,
+  },
+  specialtiesContent: {
+    paddingHorizontal: 16,
   },
   chip: {
-    marginRight: 12,
-    marginBottom: 8,
+    marginRight: 8,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  selectedChip: {
+    backgroundColor: '#1976D2',
+    borderColor: '#1976D2',
+  },
+  selectedChipText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
   },
   loadingContainer: {
-    padding: 40,
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
   },
   errorContainer: {
-    padding: 40,
+    padding: 20,
     alignItems: 'center',
   },
   errorText: {
-    color: 'red',
-    marginBottom: 20,
-    fontSize: 16,
+    color: '#D32F2F',
+    textAlign: 'center',
   },
   doctorsContainer: {
-    padding: 20,
-    paddingTop: 8,
+    padding: 16,
+    paddingTop: 0,
   },
   doctorCard: {
-    marginBottom: 20,
-    elevation: 4,
+    marginBottom: 16,
     borderRadius: 12,
+    elevation: 4,
   },
   doctorHeader: {
     flexDirection: 'row',
-    marginBottom: 20,
+    marginBottom: 16,
   },
   avatar: {
-    marginRight: 20,
+    marginRight: 16,
   },
   doctorInfo: {
     flex: 1,
   },
-  detailsContainer: {
-    marginBottom: 20,
+  doctorName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 4,
   },
-  detailText: {
+  specialization: {
+    color: '#666',
+    marginBottom: 4,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  ratingIcon: {
+    margin: 0,
+    marginRight: 4,
+  },
+  rating: {
+    color: '#666',
+  },
+  detailsContainer: {
+    marginBottom: 16,
+  },
+  detailRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
   },
-  tagsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginBottom: 20,
+  detailIcon: {
+    margin: 0,
+    marginRight: 8,
   },
-  tagChip: {
-    margin: 6,
+  detailText: {
+    color: '#666',
   },
   insuranceContainer: {
-    marginBottom: 20,
+    marginBottom: 16,
   },
   insuranceTitle: {
-    marginBottom: 12,
-    fontWeight: 'bold',
-    fontSize: 16,
+    marginBottom: 8,
+    color: '#666',
   },
   insuranceChip: {
-    margin: 6,
+    marginRight: 8,
+    backgroundColor: '#E3F2FD',
   },
   actionsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 8,
   },
   bookButton: {
     flex: 1,
-    marginRight: 12,
+    marginRight: 8,
     borderRadius: 8,
   },
   callButton: {
-    backgroundColor: '#e0e0e0',
-    borderRadius: 8,
+    backgroundColor: '#E3F2FD',
+    margin: 0,
   },
 });
 

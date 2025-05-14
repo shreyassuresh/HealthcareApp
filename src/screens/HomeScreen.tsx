@@ -4,48 +4,54 @@ import { Card, Title, Paragraph, Button, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { RootTabParamList } from '../../App';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 type HomeScreenProps = BottomTabScreenProps<RootTabParamList, 'Home'>;
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const features = [
     {
-      title: 'Quick Diagnosis',
-      description: 'Check your symptoms and get instant medical advice',
+      title: t('common.quickDiagnosis'),
+      description: t('common.diagnosisDesc'),
       icon: 'medical',
       screen: 'Diagnosis' as const,
     },
     {
-      title: 'Find Doctors',
-      description: 'Search for specialists near you',
+      title: t('common.findDoctors'),
+      description: t('common.doctorsDesc'),
       icon: 'people',
       screen: 'Doctors' as const,
     },
     {
-      title: 'Health Chat',
-      description: 'Get answers to your health questions',
+      title: t('common.healthChat'),
+      description: t('common.chatDesc'),
       icon: 'chatbubbles',
       screen: 'Chat' as const,
     },
   ];
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <View style={styles.header}>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <View style={styles.headerTop}>
           <Image 
             source={require('../../assets/app-logo.png')}
             style={styles.logo}
             resizeMode="contain"
           />
-          <Title style={styles.welcomeText}>Welcome to HealthCare</Title>
-          <Paragraph style={styles.subtitle}>
-            Your personal health companion
-          </Paragraph>
+          <LanguageSwitcher />
         </View>
+        <Title style={styles.welcomeText}>{t('common.welcome')}</Title>
+        <Paragraph style={styles.subtitle}>
+          {t('common.subtitle')}
+        </Paragraph>
+      </View>
 
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         <View style={styles.featuresContainer}>
           {features.map((feature, index) => (
             <Card
@@ -54,7 +60,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               onPress={() => navigation.navigate(feature.screen)}
             >
               <Card.Content>
-                <Title>{feature.title}</Title>
+                <Title style={styles.featureTitle}>{feature.title}</Title>
                 <Paragraph>{feature.description}</Paragraph>
               </Card.Content>
               <Card.Actions>
@@ -62,7 +68,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                   mode="contained"
                   onPress={() => navigation.navigate(feature.screen)}
                 >
-                  Get Started
+                  {t('common.getStarted')}
                 </Button>
               </Card.Actions>
             </Card>
@@ -71,8 +77,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
         <Card style={styles.emergencyCard}>
           <Card.Content>
-            <Title style={styles.emergencyTitle}>Emergency?</Title>
-            <Paragraph>Need immediate medical attention?</Paragraph>
+            <Title style={styles.emergencyTitle}>{t('common.emergency')}</Title>
+            <Paragraph>{t('common.emergencyDesc')}</Paragraph>
           </Card.Content>
           <Card.Actions>
             <Button
@@ -80,12 +86,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               buttonColor="#FF4444"
               onPress={() => {/* Handle emergency */}}
             >
-              Call Emergency
+              {t('common.callEmergency')}
             </Button>
           </Card.Actions>
         </Card>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -95,16 +101,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   header: {
-    padding: 24,
-    paddingTop: 32,
-    paddingBottom: 32,
+    padding: 16,
+    paddingTop: 0,
     backgroundColor: '#2196F3',
     alignItems: 'center',
   },
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: 12,
+    paddingTop: 8,
+  },
   logo: {
-    width: 120,
-    height: 120,
-    marginBottom: 16,
+    width: 80,
+    height: 80,
   },
   welcomeText: {
     color: 'white',
@@ -119,24 +131,34 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
   },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 16,
+  },
   featuresContainer: {
-    padding: 20,
-    paddingTop: 24,
+    padding: 16,
   },
   card: {
-    marginBottom: 20,
+    marginBottom: 16,
     elevation: 4,
     borderRadius: 12,
   },
+  featureTitle: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    marginBottom: 8,
+  },
   emergencyCard: {
-    margin: 20,
-    marginTop: 8,
+    margin: 16,
     backgroundColor: '#FFE5E5',
     borderRadius: 12,
   },
   emergencyTitle: {
     color: '#FF4444',
     fontSize: 20,
+    fontWeight: 'bold',
   },
 });
 
