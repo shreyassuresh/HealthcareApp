@@ -58,11 +58,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
   const { t } = useTranslation();
 
   const [userInfo, setUserInfo] = useState({
-    name: 'John Doe',
-    age: '28',
+    name: 'Rangasamy Suresh',
+    age: '20',
     bloodGroup: 'O+',
     allergies: 'None',
-    emergencyContact: 'Jane Doe (Spouse) - 123-456-7890',
+    emergencyContact: 'Phalguni Suresh (Spouse) - 123-456-7890',
   });
 
   const [avatarUrl, setAvatarUrl] = useState('https://avatar.iran.liara.run/public/30');
@@ -96,7 +96,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation, route }) => {
               />
               <View style={styles.profileInfo}>
                 <Title>{userInfo.name}</Title>
-                <Paragraph>Patient ID: #12345</Paragraph>
+                <Paragraph>Patient ID: #10859</Paragraph>
                 <Button 
                   mode="text" 
                   onPress={generateNewAvatar}
